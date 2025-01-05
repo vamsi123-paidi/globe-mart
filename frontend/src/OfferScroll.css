@@ -1,0 +1,46 @@
+.offers-container {
+    width: 100%;
+    background-color: #ff7e5f; 
+    padding: 10px 0;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  
+  .offers-scroll {
+    display: flex;
+    white-space: nowrap;
+    animation: scrollOffers 10s linear infinite; 
+  }
+  
+  .offer-item {
+    padding: 10px 30px;
+    margin-right: 50px;
+    background-color: #fff;
+    color: #ff6f61;
+    font-size: 1.2rem;
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .offer-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  @keyframes scrollOffers {
+    0% {
+      transform: translateX(100%); 
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+  

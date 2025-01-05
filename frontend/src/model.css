@@ -1,0 +1,113 @@
+/* Custom Modal Styles */
+.custom-modal {
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 600px;
+    margin: 5% auto; /* This centers it horizontally */
+    padding: 20px;
+    position: fixed; /* Ensures it stays centered even when scrolling */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centers the modal both vertically and horizontally */
+}
+
+/* Modal Header */
+.custom-modal-header {
+    background-color: #ff6347;
+    color: #ffffff;
+    border-bottom: 1px solid #ff6347;
+    font-weight: bold;
+    text-align: center;
+    padding-bottom: 15px;
+}
+
+.custom-modal-header h2 {
+    font-size: 1.8rem;
+}
+
+/* Modal Body */
+.custom-modal-body {
+    background-color: #ffffff;
+    padding: 20px;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+/* Form Inputs */
+.custom-input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ff6347;
+    border-radius: 8px;
+    background-color: #f8f8f8;
+    color: #333;
+    transition: border 0.3s ease;
+}
+
+.custom-input:focus {
+    border-color: #ff6347;
+    outline: none;
+}
+
+/* Modal Footer */
+.custom-modal-footer {
+    background-color: #f8f8f8;
+    padding: 15px;
+    border-top: 1px solid #ff6347;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Buttons */
+.custom-button {
+    border-radius: 8px;
+    padding: 12px 20px;
+    background-color: #ff6347;
+    border: none;
+    color: white;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    cursor: pointer;
+}
+
+.custom-button:hover {
+    background-color: #e55347;
+    transform: translateY(-3px);
+}
+
+.custom-button:focus {
+    outline: none;
+}
+
+.custom-button.cancel {
+    background-color: #ccc;
+    color: #333;
+}
+
+.custom-button.cancel:hover {
+    background-color: #b3b3b3;
+}
+
+/* Responsive Design for Small Screens */
+@media (max-width: 768px) {
+    .custom-modal {
+        width: 90%;
+        padding: 15px;
+    }
+
+    .custom-modal-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .custom-input {
+        font-size: 1rem;
+    }
+
+    .custom-button {
+        padding: 10px 15px;
+        font-size: 1rem;
+    }
+}
