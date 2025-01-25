@@ -6,10 +6,9 @@ import Offcanvas from 'react-bootstrap/Offcanvas';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { Cart } from 'react-bootstrap-icons';
-import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Modal, Button, Form } from 'react-bootstrap';
-import axios from 'axios'; // Axios for API requests
+import axios from 'axios';
 import "../model.css";
 
 const categories = [
@@ -19,107 +18,107 @@ const categories = [
 ];
 
 const Navbarcomponent = () => {
-  const cart = useSelector((state) => state.products.cart);
-  const totalItemsInCart = cart.reduce((total, item) => total + item.quantity, 0);
+  const navigate = useNavigate();
 
-  // Modal state
+  // Authentication state
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // Cart state
+  const [totalItemsInCart, setTotalItemsInCart] = useState(0);
+
+  // Modal states
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
+
+  // Form states
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  // User login state
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  // Handle show/hide of modals
-  const handleCloseLogin = () => setShowLogin(false);
-  const handleShowLogin = () => setShowLogin(true);
-
-  const handleCloseRegister = () => setShowRegister(false);
-  const handleShowRegister = () => setShowRegister(true);
-
-  // Check if the user is logged in by verifying the token in localStorage
+  // Check login status on mount
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
     }
+
+    // Check the cart item count from localStorage if logged in
+    const storedCart = JSON.parse(localStorage.getItem('cart')) || [];
+    const totalItems = storedCart.reduce((total, item) => total + item.quantity, 0);
+    setTotalItemsInCart(totalItems);
+
   }, []);
 
-  const handleLogin = async (e) => {
-    e.preventDefault(); // Prevent form from reloading the page
+  // Login handlers
+  const handleShowLogin = () => setShowLogin(true);
+  const handleCloseLogin = () => setShowLogin(false);
 
-    // Check if email and password are not empty
+  // Register handlers
+  const handleShowRegister = () => setShowRegister(true);
+  const handleCloseRegister = () => setShowRegister(false);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
     if (!email || !password) {
-      alert("Please enter both email and password.");
+      alert('Email and password are required.');
       return;
     }
 
     try {
-      // Sending a POST request to the backend API
       const response = await axios.post('http://localhost:5000/api/auth/login', {
         email,
-        password
+        password,
       });
 
-      // Handle success (store token, update state, etc.)
-      console.log(response.data);
-      localStorage.setItem('token', response.data.token); // Store token in localStorage
-      setIsLoggedIn(true);
-      alert("Login successful");
-
-      handleCloseLogin(); // Close the login modal
-
-    } catch (error) {
-      if (error.response) {
-        console.error('Login error:', error.response.data);  // Log detailed error from server
-        alert(error.response.data);  // Show error message to user
-      } else {
-        console.error('Request error:', error.message);  // Log error if no response is received
-        alert('An error occurred during login.');
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        setIsLoggedIn(true);
+        setShowLogin(false);
+        navigate('/');
       }
+    } catch (error) {
+      console.error('Login failed:', error);
+      alert('Login failed');
     }
   };
 
   const handleRegister = async (e) => {
     e.preventDefault();
-
-    // Check if password and confirm password match
-    if (password !== confirmPassword) {
-      alert("Passwords do not match.");
+    if (!email || !password || password !== confirmPassword) {
+      alert('Please fill out the form correctly.');
       return;
     }
 
     try {
       const response = await axios.post('http://localhost:5000/api/auth/register', {
         email,
-        password
+        password,
       });
-      alert('Registration successful');
-      handleCloseRegister(); // Close the register modal
-    } catch (error) {
-      if (error.response && error.response.data === 'User already exists') {
-        alert('This email is already registered. Please try a different one.');
-      } else {
-        console.error('Registration error:', error);
-        alert('An error occurred during registration.');
+
+      if (response.data.message === 'User registered successfully') {
+        alert('Registration successful. You can now log in.');
+        setShowLogin(true);
       }
+    } catch (error) {
+      console.error('Registration failed:', error);
+      alert('Registration failed');
     }
   };
 
-  // Logout functionality
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Remove token from localStorage
+    localStorage.removeItem('token');
     setIsLoggedIn(false);
-    alert('Logged out successfully');
+    setTotalItemsInCart(0); // Reset cart count on logout
+    navigate('/');
   };
 
   return (
     <>
       <Navbar expand="lg" className="bg-light text-dark mb-3 fixed-top">
         <Container fluid>
-          <Navbar.Brand as={Link} to="/" className='text-dark'>Babai Shopping</Navbar.Brand>
+          <Navbar.Brand as={Link} to="/" className="text-dark">OfferZone</Navbar.Brand>
           <div className="d-flex justify-content-end">
             <Navbar.Toggle aria-controls="offcanvasNavbar" />
           </div>
@@ -149,15 +148,13 @@ const Navbarcomponent = () => {
                 </NavDropdown>
                 <Nav.Link as={Link} to='/cart' className="position-relative text-dark">
                   <Cart size={24} aria-label="Cart" />
-                  {totalItemsInCart > 0 && ( 
+                  {totalItemsInCart > 0 && (
                     <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                       {totalItemsInCart}
-                      <span className="visually-hidden">unread messages</span>
+                      <span className="visually-hidden">items in cart</span>
                     </span>
                   )}
                 </Nav.Link>
-
-                {/* Conditionally render Login/Logout links */}
                 {isLoggedIn ? (
                   <Nav.Link onClick={handleLogout} className="text-dark">Logout</Nav.Link>
                 ) : (
@@ -181,9 +178,9 @@ const Navbarcomponent = () => {
           <Form onSubmit={handleLogin}>
             <Form.Group controlId="formBasicEmail">
               <Form.Label>Email address</Form.Label>
-              <Form.Control 
-                type="email" 
-                placeholder="Enter email" 
+              <Form.Control
+                type="email"
+                placeholder="Enter email"
                 className="custom-input"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -191,9 +188,9 @@ const Navbarcomponent = () => {
             </Form.Group>
             <Form.Group controlId="formBasicPassword">
               <Form.Label>Password</Form.Label>
-              <Form.Control 
-                type="password" 
-                placeholder="Password" 
+              <Form.Control
+                type="password"
+                placeholder="Password"
                 className="custom-input"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -220,9 +217,9 @@ const Navbarcomponent = () => {
           <Form onSubmit={handleRegister}>
             <Form.Group controlId="formBasicEmail">
               <Form.Label>Email address</Form.Label>
-              <Form.Control 
-                type="email" 
-                placeholder="Enter email" 
+              <Form.Control
+                type="email"
+                placeholder="Enter email"
                 className="custom-input"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -230,9 +227,9 @@ const Navbarcomponent = () => {
             </Form.Group>
             <Form.Group controlId="formBasicPassword">
               <Form.Label>Password</Form.Label>
-              <Form.Control 
-                type="password" 
-                placeholder="Password" 
+              <Form.Control
+                type="password"
+                placeholder="Password"
                 className="custom-input"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -240,9 +237,9 @@ const Navbarcomponent = () => {
             </Form.Group>
             <Form.Group controlId="formBasicConfirmPassword">
               <Form.Label>Confirm Password</Form.Label>
-              <Form.Control 
-                type="password" 
-                placeholder="Confirm password" 
+              <Form.Control
+                type="password"
+                placeholder="Confirm password"
                 className="custom-input"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}

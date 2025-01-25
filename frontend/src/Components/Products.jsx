@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchProductsByCategory, addToCart } from '../Redux/productsSlice';
+import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import { fetchProductsByCategory } from '../Redux/productsSlice'; // Adjust path as necessary
 import '../App.css';
 import axios from 'axios';
 
@@ -11,31 +11,37 @@ const ProductsPage = ({ searchQuery }) => {
   const { category } = useParams();
   const [sortOrder, setSortOrder] = useState('lowToHigh');
 
-  // Fetch products when categories are loaded or changed
+  // Fetch products by category using Redux
   useEffect(() => {
     if (categories.length > 0) {
       categories.forEach((cat) => {
         if (!productsByCategory[cat]) {
-          dispatch(fetchProductsByCategory(cat));
+          dispatch(fetchProductsByCategory(cat)); // Dispatch Redux action
         }
       });
     }
-  }, [dispatch, categories, productsByCategory]);
+  }, [categories, dispatch, productsByCategory]);
 
   const handleAddToCart = async (product) => {
     const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId'); // Assuming userId is stored in localStorage, adjust as needed
+
     if (!token) {
       alert('You must be logged in to add items to the cart');
       return;
     }
 
+    if (!userId) {
+      alert('User ID is missing');
+      return;
+    }
+
     try {
       const response = await axios.post(
-        'http://localhost:5000/api/cart',
+        'http://localhost:5000/api/cart/add',
         {
+          userId: userId,
           productId: product.id,
-          name: product.title,
-          price: product.price,
           quantity: 1,
         },
         {
@@ -44,19 +50,13 @@ const ProductsPage = ({ searchQuery }) => {
           },
         }
       );
-      alert(response.data.message);
+      console.log(response.data);
     } catch (error) {
-      console.error(error);
-      alert('Error adding product to cart');
+      console.error('Error adding to cart:', error);
+      // Handle the error gracefully, such as showing a message to the user
     }
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
-
-  const formattedCategory = category ? category.replace(/-/g, ' ') : null;
-
-  // Sorting function
   const sortProducts = (products) => {
     const sortedProducts = [...products];
     if (sortOrder === 'lowToHigh') {
@@ -73,6 +73,12 @@ const ProductsPage = ({ searchQuery }) => {
     );
   };
 
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
+
+  const formattedCategory = category ? category.replace(/-/g, ' ') : null;
+
+  // Render products based on search query or category
   if (searchQuery) {
     const allProducts = categories.flatMap((cat) => productsByCategory[cat] || []);
     const filteredProducts = filterProducts(allProducts);
@@ -89,9 +95,13 @@ const ProductsPage = ({ searchQuery }) => {
                 <p className="price">Price: ${product.price}</p>
                 <p className="brand">Brand: {product.brand}</p>
                 <p className="rating">Rating: {product.rating} ⭐</p>
-                <p className="availability">Availability: {product.availabilityStatus}</p>
                 <p className="stock">Stock: {product.stock}</p>
-                <button className="btn btn-outline-primary w-100" onClick={() => handleAddToCart(product)}>Add to cart</button>
+                <button
+                  className="btn btn-outline-primary w-100"
+                  onClick={() => handleAddToCart(product)}
+                >
+                  Add to cart
+                </button>
               </div>
             ))
           ) : (
@@ -123,25 +133,21 @@ const ProductsPage = ({ searchQuery }) => {
                 <p className="price">Price: ${product.price}</p>
                 <p className="brand">Brand: {product.brand}</p>
                 <p className="rating">Rating: {product.rating} ⭐</p>
-                <p className="availability">Availability: {product.availabilityStatus}</p>
                 <p className="stock">Stock: {product.stock}</p>
-                <button className="btn btn-outline-primary w-100" onClick={() => handleAddToCart(product)}>Add to cart</button>
+                <button
+                  className="btn btn-outline-primary w-100"
+                  onClick={() => handleAddToCart(product)}
+                >
+                  Add to cart
+                </button>
               </div>
-            )) || <p>No products available in this category.</p>}
+            ))}
           </div>
         </div>
       ) : (
         categories.map((cat) => (
           <div key={cat} className="category-section">
-            <div className="category-header">
-              <h2>{cat.replace(/-/g, ' ').toUpperCase()}</h2>
-              <div className="filter-container">
-                <select value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
-                  <option value="lowToHigh">Low to High</option>
-                  <option value="highToLow">High to Low</option>
-                </select>
-              </div>
-            </div>
+            <h2>{cat.replace(/-/g, ' ').toUpperCase()}</h2>
             <div className="products-row">
               {sortProducts(productsByCategory[cat] || []).map((product) => (
                 <div key={product.id} className="product-card">
@@ -150,11 +156,15 @@ const ProductsPage = ({ searchQuery }) => {
                   <p className="price">Price: ${product.price}</p>
                   <p className="brand">Brand: {product.brand}</p>
                   <p className="rating">Rating: {product.rating} ⭐</p>
-                  <p className="availability">Availability: {product.availabilityStatus}</p>
                   <p className="stock">Stock: {product.stock}</p>
-                  <button className="btn btn-outline-primary w-100" onClick={() => handleAddToCart(product)}>Add to cart</button>
+                  <button
+                    className="btn btn-outline-primary w-100"
+                    onClick={() => handleAddToCart(product)}
+                  >
+                    Add to cart
+                  </button>
                 </div>
-              )) || <p>No products available in this category.</p>}
+              ))}
             </div>
           </div>
         ))

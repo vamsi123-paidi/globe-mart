@@ -12,10 +12,8 @@ import Scrollingadd from './Components/Scrollingadd';
 const App = () => {
   const [searchQuery, setSearchQuery] = useState('');
   
-  // Safely access cart, with a fallback to an empty array if cart is undefined or null
   const cart = useSelector((state) => state.cart?.cart || []);
   
-  // Ensure cart is an array before calling reduce
   const totalItemsInCart = Array.isArray(cart)
     ? cart.reduce((total, item) => total + item.quantity, 0)
     : 0;
