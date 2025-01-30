@@ -1,49 +1,43 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../App.css';
+import { useNavigate } from 'react-router-dom'; 
 
 const CartPage = () => {
+  const navigate = useNavigate();
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch cart data from the backend
   useEffect(() => {
     const fetchCart = async () => {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        setError('You must be logged in to view the cart');
-        setLoading(false);
-        return;
-      }
-
       try {
-        // Decode the token manually to get userId
-        const decoded = JSON.parse(atob(token.split('.')[1])); // Decode token manually to get userId
-        const userId = decoded?.id;
+        const token = localStorage.getItem('token');
+        const userId = localStorage.getItem('userId');
 
-        if (!userId) {
-          setError('Invalid token');
+        if (!token || !userId) {
+          setError('User not logged in');
           setLoading(false);
           return;
         }
 
-        // Now make the request with the userId in the URL
-        const response = await axios.get(`http://localhost:5000/api/cart/${userId}`, {
+        const response = await axios.get('http://localhost:5000/api/cart', {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
 
-        if (response.data.cart) {
-          setCart(response.data.cart.items); // Adjust based on the response structure
+        console.log('Cart data from API:', response.data);
+
+        if (response.data.items) {
+          setCart(response.data.items);  // Update state with the cart items
         } else {
-          setError('Cart data is not available');
+          setError('No cart found for this user');
         }
-        setLoading(false);
       } catch (err) {
         console.error('Error fetching cart:', err);
-        setError('Error fetching cart');
+        setError('Failed to fetch cart');
+      } finally {
         setLoading(false);
       }
     };
@@ -51,70 +45,81 @@ const CartPage = () => {
     fetchCart();
   }, []);
 
-  // Handle quantity change in the cart
-  const handleQuantityChange = async (productId, quantity) => {
-    if (quantity < 1) return; // Don't allow quantity to be less than 1
-
-    const token = localStorage.getItem('token');
+  const handleQuantityChange = async (productId, newQuantity) => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('No token found');
+        return;
+      }
+
       const response = await axios.put(
         `http://localhost:5000/api/cart/${productId}`,
-        { quantity },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { quantity: newQuantity },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-      setCart(response.data.cart.items); // Assuming backend returns updated cart items
+
+      console.log('Quantity updated successfully:', response.data);
+
+      // Update cart state
+      setCart((prevItems) =>
+        prevItems.map((item) =>
+          item.productId === productId ? { ...item, quantity: newQuantity } : item
+        )
+      );
     } catch (error) {
       console.error('Error updating quantity:', error);
-      alert('Error updating product quantity');
     }
   };
 
-  // Remove item from the cart
+
+
+
+
+
   const handleRemove = async (productId) => {
     const token = localStorage.getItem('token');
-    if (!token) {
-      console.error('No token found');
-      return;
-    }
-  
-    console.log('Removing productId:', productId); // Check what is being passed
-  
     try {
       const response = await axios.post(
         'http://localhost:5000/api/cart/remove',
-        { productId }, // Ensure this is being sent correctly
+        { productId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      console.log('Item removed:', response.data);
-      setCart(response.data.items); // Update the cart state
+
+      if (response.status === 200) {
+        console.log('Item removed successfully:', response.data.items);
+        setCart(response.data.items);
+      }
     } catch (error) {
       console.error('Error removing product:', error);
     }
-  };  
+  };
 
-
-  // Clear the entire cart
   const handleClearCart = async () => {
     const token = localStorage.getItem('token');
     try {
       const response = await axios.delete('http://localhost:5000/api/cart', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-      setCart([]); // Clear the cart state
+
+      if (response.status === 200) {
+        setCart([]); // Clear cart state
+      }
     } catch (error) {
       console.error('Error clearing cart:', error);
       alert('Error clearing cart');
     }
   };
-  
 
   const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
+
+  const handleProceedToCheckout = () => {
+    // Navigate to the checkout page
+    navigate('/checkout');
+  };
+
+  // Debug: Log the cart state
+  console.log('Current cart:', cart);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
@@ -127,14 +132,13 @@ const CartPage = () => {
       ) : (
         <>
           <div className="products-row">
-            {cart.map((item) => (
-              <div key={item.id || item.productId} className="product-card"> {/* Unique key */}
-                <img src={item.thumbnail} alt={item.title} />
+            {cart.map((item, index) => (
+              <div key={`${item.productId}-${index}`} className="product-card">
+                <img src={item.thumbnail || 'default-image.jpg'} alt={item.title} />
                 <h5>{item.title}</h5>
                 <p className="price">Price: ${item.price}</p>
                 <p className="brand">Brand: {item.brand}</p>
                 <p className="rating">Rating: {item.rating} ⭐</p>
-                <p className="availability">Availability: {item.availabilityStatus}</p>
                 <p className="stock">Stock: {item.stock}</p>
                 <div className="mb-2">
                   <label className="me-2">Quantity:</label>
@@ -142,11 +146,11 @@ const CartPage = () => {
                     type="number"
                     value={item.quantity}
                     min="1"
-                    onChange={(e) => handleQuantityChange(item.id, Number(e.target.value))}
+                    onChange={(e) => handleQuantityChange(item.productId, parseInt(e.target.value, 10))}
                     className="form-control w-27"
                   />
                 </div>
-                <button className="btn btn-outline-danger mb-2" onClick={() => handleRemove(item.productId)}>
+                <button className="btn btn-outline-danger mb-2 w-100" onClick={() => handleRemove(item.productId)}>
                   Remove
                 </button>
               </div>
@@ -157,10 +161,14 @@ const CartPage = () => {
               Clear Cart
             </button>
             <h4 className="totalprice">Total Price: ${totalPrice}</h4>
-          </div>
-        </>
-      )}
-    </div>
+            <div className="checkout-btn">
+              <button className='btn btn-primary mt-3' onClick={handleProceedToCheckout}>Continue</button>
+            </div>
+        </div>
+    </>
+  )
+}
+    </div >
   );
 };
 

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
 import '../App.css';
 
 const Searchbar = ({ setSearchQuery }) => {
@@ -47,9 +46,9 @@ const Searchbar = ({ setSearchQuery }) => {
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
         />
-        <Button variant="outline-success" type="submit">
+        <button variant="outline-success" type="submit">
           Search
-        </Button>
+        </button>
       </Form>
     </div>
   );

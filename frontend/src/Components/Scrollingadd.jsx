@@ -16,7 +16,7 @@ const OffersScroll = () => {
   return (
     <div className="offers-container">
       <div className="offers-scroll">
-        {offers.concat(offers).map((offer, index) => (
+        {offers.map((offer, index) => (
           <div className="offer-item" key={index}>
             <span>{offer}</span>
           </div>

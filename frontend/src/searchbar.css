@@ -1,0 +1,142 @@
+/* Overall container for the Search Bar */
+.Search-container {
+    background-color: #ff7f50; /* Orange background */
+    height: 100vh; /* Full screen height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    color: white;
+    text-align: center;
+  }
+  
+  /* Styling for the quote animation */
+  .quote-container {
+    margin-bottom: 30px;
+  }
+  
+  #quote-text {
+    font-size: 2.5rem;
+    font-family: 'Helvetica Neue', sans-serif;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 2s ease-out forwards;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 0;
+    border-right: 3px solid rgba(255, 255, 255, 0.7);
+  }
+  
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+      width: 0;
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+      width: 100%;
+    }
+  }
+  
+  /* Search form container - flexible and stunning */
+  .form-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.9); /* White background with slight transparency */
+    padding: 12px 20px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+  }
+  
+  /* Search input field */
+  .form-container input {
+    flex-grow: 1;
+    padding: 12px;
+    border: 2px solid #ff6347; /* Lighter orange border */
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: white;
+    margin-right: 10px; /* Space between input and button */
+    transition: all 0.3s ease;
+  }
+  
+  .form-container input:focus {
+    outline: none;
+    border-color: #ff4500; /* Darker orange on focus */
+    box-shadow: 0 0 5px rgba(255, 69, 0, 0.7);
+  }
+  
+  /* Search button */
+  .form-container button {
+    padding: 12px 20px;
+    border: none;
+    background-color: #ff4500; /* Dark orange background */
+    color: white;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .form-container button:hover {
+    background-color: #ff6347; /* Lighter orange on hover */
+    transform: translateY(-3px);
+  }
+  
+  .form-container button:active {
+    transform: translateY(0);
+    background-color: #e53d00; /* Even darker orange on active */
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    #quote-text {
+      font-size: 2rem;
+      white-space: normal;
+      text-align: center;
+    }
+  
+    .form-container {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  
+    .form-container input {
+      margin-bottom: 15px;
+      width: 100%;
+    }
+  
+    .form-container button {
+      width: 100%;
+      margin-top: 10px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    #quote-text {
+      font-size: 1.6rem;
+    }
+  
+    .form-container {
+      padding: 10px 15px;
+      max-width: 100%;
+    }
+  
+    .form-container input {
+      font-size: 0.9rem;
+    }
+  
+    .form-container button {
+      font-size: 0.9rem;
+    }
+  }
+  

@@ -1,14 +1,17 @@
 const mongoose = require('mongoose');
 
 const cartSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' },
-  items: [
-    {
-      productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
-      quantity: { type: Number, required: true, default: 1 },
-    },
-  ],
+  userId: { type: String, required: true },
+  productId: { type: String, required: true },
+  title: { type: String, required: true },
+  price: { type: Number, required: true },
+  thumbnail: { type: String, required: true },
+  brand: { type: String },
+  stock: { type: Number },
+  rating: { type: Number },
+  quantity: { type: Number, default: 1 },
+  totalPrice: { type: Number, default: 0 } 
 });
 
-const Cart = mongoose.model('Cart', cartSchema);
-module.exports = Cart;
+
+module.exports = mongoose.model('Cart', cartSchema);

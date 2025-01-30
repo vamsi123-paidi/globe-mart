@@ -21,7 +21,7 @@ const Footer = () => {
             </li>
           ))}
         </ul>
-        <p>&copy; {new Date().getFullYear()} OfferZone Shopping. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} Globe Mart Shopping. All rights reserved.</p>
       </div>
     </footer>
   );

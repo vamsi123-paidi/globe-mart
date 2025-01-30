@@ -1,19 +1,145 @@
 /* Custom Modal Styles */
+.brand-logo {
+    font-family: 'Arial', sans-serif;
+    font-weight: 700;
+    font-size: 2.5rem;
+    color: #333;
+    position: relative;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+    transition: transform 0.4s ease, color 0.4s ease, text-shadow 0.3s ease;
+}
+
+/* Hover effect with glowing text-shadow */
+.brand-logo:hover {
+    color: #ff6347;
+    text-shadow: 0px 0px 8px rgba(255, 136, 0, 0.6), 0px 0px 15px rgb(206, 84, 14);
+    transform: translateY(-2px);
+}
+
+.brand-logo::after {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #ff6347;
+    border-radius: 3px;
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease-in-out;
+}
+
+.brand-logo:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+@media (max-width: 576px) {
+    .brand-logo {
+        font-size: 2rem;
+        letter-spacing: 0.5px;
+        padding: 0 10px;
+    }
+}
+
+/* Fixed Navbar with solid background */
+.navbar-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease-in-out;
+}
+
+.navbar-fixed .position-relative {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.navbar-fixed .position-absolute {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #f44336;
+    color: white;
+    padding: 2px 5px;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.navbar-fixed .nav-link {
+    font-family: 'Arial', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #333;
+    padding: 0.5rem 1rem;
+    transition: color 0.3s ease, text-shadow 0.3s ease, transform 0.3s ease;
+}
+
+/* Hover Effect */
+.navbar-fixed .nav-link:hover {
+    color: #ff6347;
+    text-shadow: 0px 0px 8px rgba(255, 136, 0, 0.6), 0px 0px 15px rgb(206, 84, 14);
+    transform: translateY(-2px);
+}
+
+/* Underline on Hover */
+.navbar-fixed .nav-link::after {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #ff6347;
+    border-radius: 3px;
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease-in-out;
+}
+
+.navbar-fixed .nav-link:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+/* Modal Styling */
 .custom-modal {
     border-radius: 10px;
     background-color: #ffffff;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     width: 80%;
     max-width: 600px;
-    margin: 5% auto; /* This centers it horizontally */
+    margin: 5% auto;
     padding: 20px;
-    position: fixed; /* Ensures it stays centered even when scrolling */
+    position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); /* Centers the modal both vertically and horizontally */
+    transform: translate(-50%, -50%);
+    animation: fadeIn 0.4s ease-in-out;
 }
 
-/* Modal Header */
+/* Modal Fade-In Effect */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -40%);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
 .custom-modal-header {
     background-color: #ff6347;
     color: #ffffff;
@@ -27,7 +153,6 @@
     font-size: 1.8rem;
 }
 
-/* Modal Body */
 .custom-modal-body {
     background-color: #ffffff;
     padding: 20px;
@@ -35,7 +160,7 @@
     font-size: 1.1rem;
 }
 
-/* Form Inputs */
+/* Inputs */
 .custom-input {
     width: 100%;
     padding: 12px;
@@ -52,7 +177,6 @@
     outline: none;
 }
 
-/* Modal Footer */
 .custom-modal-footer {
     background-color: #f8f8f8;
     padding: 15px;
@@ -61,7 +185,6 @@
     justify-content: flex-end;
 }
 
-/* Buttons */
 .custom-button {
     border-radius: 8px;
     padding: 12px 20px;
@@ -78,10 +201,6 @@
     transform: translateY(-3px);
 }
 
-.custom-button:focus {
-    outline: none;
-}
-
 .custom-button.cancel {
     background-color: #ccc;
     color: #333;
@@ -91,7 +210,6 @@
     background-color: #b3b3b3;
 }
 
-/* Responsive Design for Small Screens */
 @media (max-width: 768px) {
     .custom-modal {
         width: 90%;

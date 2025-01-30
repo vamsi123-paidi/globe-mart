@@ -116,9 +116,11 @@ const Navbarcomponent = () => {
 
   return (
     <>
-      <Navbar expand="lg" className="bg-light text-dark mb-3 fixed-top">
+      <Navbar expand="lg" className="navbar-fixed">
         <Container fluid>
-          <Navbar.Brand as={Link} to="/" className="text-dark">OfferZone</Navbar.Brand>
+          <Navbar.Brand as={Link} to="/" className="brand-logo text-dark">
+            Globe Mart
+          </Navbar.Brand>
           <div className="d-flex justify-content-end">
             <Navbar.Toggle aria-controls="offcanvasNavbar" />
           </div>
@@ -133,21 +135,21 @@ const Navbarcomponent = () => {
             </Offcanvas.Header>
             <Offcanvas.Body>
               <Nav className="justify-content-end flex-grow-1 pe-3">
-                <Nav.Link as={Link} to="/" className="text-dark">Home</Nav.Link>
+                <Nav.Link as={Link} to="/" className="nav-link text-dark">Home</Nav.Link>
                 <NavDropdown title="Categories" id="navbarScrollingDropdown" className="dropdown-title">
                   {categories.map((category) => (
                     <NavDropdown.Item
                       as={Link}
                       key={category}
                       to={`/products/${category.toLowerCase().replace(/\s+/g, '-')}`}
-                      className="text-dark"
+                      className="text-dark nav-link"
                     >
                       {category}
                     </NavDropdown.Item>
                   ))}
                 </NavDropdown>
                 <Nav.Link as={Link} to='/cart' className="position-relative text-dark">
-                  <Cart size={24} aria-label="Cart" />
+                  <Cart size={24} aria-label="Cart" className="cart-icon" />
                   {totalItemsInCart > 0 && (
                     <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                       {totalItemsInCart}
@@ -155,12 +157,13 @@ const Navbarcomponent = () => {
                     </span>
                   )}
                 </Nav.Link>
+
                 {isLoggedIn ? (
-                  <Nav.Link onClick={handleLogout} className="text-dark">Logout</Nav.Link>
+                  <Nav.Link onClick={handleLogout} className="nav-link text-dark">Logout</Nav.Link>
                 ) : (
                   <>
-                    <Nav.Link onClick={handleShowLogin} className="text-dark">Login</Nav.Link>
-                    <Nav.Link onClick={handleShowRegister} className="text-dark">Register</Nav.Link>
+                    <Nav.Link onClick={handleShowLogin} className="nav-link text-dark">Login</Nav.Link>
+                    <Nav.Link onClick={handleShowRegister} className="nav-link text-dark">Register</Nav.Link>
                   </>
                 )}
               </Nav>
@@ -168,6 +171,9 @@ const Navbarcomponent = () => {
           </Navbar.Offcanvas>
         </Container>
       </Navbar>
+
+
+
 
       {/* Login Modal */}
       <Modal show={showLogin} onHide={handleCloseLogin} className="custom-modal">

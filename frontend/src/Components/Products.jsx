@@ -2,14 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { fetchProductsByCategory } from '../Redux/productsSlice'; // Adjust path as necessary
-import '../App.css';
 import axios from 'axios';
+import '../App.css';
 
 const ProductsPage = ({ searchQuery }) => {
   const dispatch = useDispatch();
   const { categories, productsByCategory, loading, error } = useSelector((state) => state.products);
   const { category } = useParams();
   const [sortOrder, setSortOrder] = useState('lowToHigh');
+  const [quantity, setQuantity] = useState(1);
+  const [cart, setCart] = useState([]);
+
 
   // Fetch products by category using Redux
   useEffect(() => {
@@ -23,26 +26,23 @@ const ProductsPage = ({ searchQuery }) => {
   }, [categories, dispatch, productsByCategory]);
 
   const handleAddToCart = async (product) => {
-    const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('userId'); // Assuming userId is stored in localStorage, adjust as needed
-
-    if (!token) {
-      alert('You must be logged in to add items to the cart');
-      return;
-    }
-
-    if (!userId) {
-      alert('User ID is missing');
-      return;
-    }
-
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('No token found in localStorage');
+        return;
+      }
+
       const response = await axios.post(
         'http://localhost:5000/api/cart/add',
         {
-          userId: userId,
           productId: product.id,
-          quantity: 1,
+          title: product.title,
+          price: product.price,
+          thumbnail: product.thumbnail,
+          brand: product.brand,
+          stock: product.stock,
+          rating: product.rating,
         },
         {
           headers: {
@@ -50,10 +50,24 @@ const ProductsPage = ({ searchQuery }) => {
           },
         }
       );
-      console.log(response.data);
+
+      console.log('API response:', response.data); // Log the full response for inspection
+
+      if (response.status === 200) {
+        const updatedCartItems = response.data.cart?.items;
+
+        if (updatedCartItems) {
+          console.log('Cart updated:', updatedCartItems);
+          setCart(updatedCartItems); // Update the cart state with the new items
+        } else {
+          console.error('No items found in the response cart.');
+        }
+      }
     } catch (error) {
-      console.error('Error adding to cart:', error);
-      // Handle the error gracefully, such as showing a message to the user
+      console.error('Failed to add to cart', error);
+      if (error.response) {
+        console.error('Response error:', error.response.data);
+      }
     }
   };
 
@@ -78,7 +92,6 @@ const ProductsPage = ({ searchQuery }) => {
 
   const formattedCategory = category ? category.replace(/-/g, ' ') : null;
 
-  // Render products based on search query or category
   if (searchQuery) {
     const allProducts = categories.flatMap((cat) => productsByCategory[cat] || []);
     const filteredProducts = filterProducts(allProducts);

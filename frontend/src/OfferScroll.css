@@ -1,46 +1,83 @@
+/* Offers Scroll Container */
 .offers-container {
-    width: 100%;
-    background-color: #ff7e5f; 
+  width: 100%;
+  background: linear-gradient(135deg, #ff7e5f, #ff6f61);
+  padding: 15px 0;
+  position: relative;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  margin-bottom: 20px;
+  overflow: hidden;
+  border-radius: 15px;
+}
+
+/* Scrolling Effect */
+.offers-scroll {
+  display: flex;
+  white-space: nowrap;
+  animation: scrollOffers 12s linear infinite;
+  /* Ensure seamless scrolling */
+}
+
+/* Styling for Each Offer */
+.offer-item {
+  padding: 15px 40px;
+  margin-right: 50px;
+  background-color: #333;
+  color: #ff9b6a;
+  font-size: 1.3rem;
+  font-weight: bold;
+  border-radius: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+/* Hover Effects for Offer Items */
+.offer-item:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  background-color: #ff6347; /* Change background on hover */
+}
+
+/* Scrolling Animation */
+@keyframes scrollOffers {
+  0% {
+    transform: translateX(100%); /* Start from right */
+  }
+  100% {
+    transform: translateX(-100%); /* End at left */
+  }
+}
+
+/* Responsive Design for Smaller Screens */
+@media (max-width: 768px) {
+  .offers-container {
     padding: 10px 0;
-    position: relative;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-    overflow: hidden;
   }
-  
-  .offers-scroll {
-    display: flex;
-    white-space: nowrap;
-    animation: scrollOffers 10s linear infinite; 
-  }
-  
+
   .offer-item {
-    padding: 10px 30px;
-    margin-right: 50px;
-    background-color: #fff;
-    color: #ff6f61;
-    font-size: 1.2rem;
-    border-radius: 25px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: bold;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 10px 20px;
+    font-size: 1.1rem;
+    margin-right: 25px; /* Reduce margin to fit better */
   }
-  
-  .offer-item:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+
+  /* Make sure the text doesn't get too big on very small devices */
+  .offer-item span {
+    font-size: 1rem;
   }
-  
-  @keyframes scrollOffers {
-    0% {
-      transform: translateX(100%); 
-    }
-    100% {
-      transform: translateX(-100%);
-    }
+}
+
+@media (max-width: 480px) {
+  .offer-item {
+    padding: 8px 15px;
+    font-size: 1rem;
+    margin-right: 20px;
   }
-  
+
+  .offer-item span {
+    font-size: 0.9rem; /* Further reduce the font size for very small devices */
+  }
+}

@@ -1,144 +1,161 @@
 const Cart = require('../models/cartSchema');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
+const User = require('../models/userSchema'); // Ensure the User model is correctly imported
+
+// Middleware for authentication
 const authMiddleware = require('../middleware/authMiddleware'); // Ensure this is used for authentication
 
 exports.addToCart = async (req, res) => {
-    // Ensure the user is authenticated
-    const token = req.header('Authorization')?.split(' ')[1];
-    if (!token) return res.status(401).json({ message: 'Access Denied: No Token Provided' });
+  try {
+    const { productId, title, price, thumbnail, brand, stock, rating, quantity = 1 } = req.body;
 
-    try {
-        // Verify the token and get the userId from the decoded token
-        const verified = jwt.verify(token, process.env.JWT_SECRET);
-        const userId = verified.id;
-
-        const { productId, quantity } = req.body;
-
-        if (!productId || !quantity || quantity < 1) {
-            return res.status(400).json({ message: 'Invalid productId or quantity' });
-        }
-
-        const objectId = new mongoose.Types.ObjectId(productId);
-
-        // Find the user's cart
-        let cart = await Cart.findOne({ userId });
-
-        // If no cart exists for the user, create a new one
-        if (!cart) {
-            cart = new Cart({
-                userId,
-                items: [{ productId: objectId, quantity }],
-            });
-            await cart.save();
-            return res.status(200).json({ message: 'Item added to cart' });
-        }
-
-        // If cart exists, check if the item is already in the cart
-        const itemIndex = cart.items.findIndex((item) => item.productId.toString() === objectId.toString());
-
-        if (itemIndex > -1) {
-            // Item already exists in cart, so update the quantity
-            cart.items[itemIndex].quantity += quantity;
-        } else {
-            // Item doesn't exist in the cart, add new item
-            cart.items.push({ productId: objectId, quantity });
-        }
-
-        // Save the updated cart
-        await cart.save();
-
-        res.status(200).json({ message: 'Item added to cart' });
-    } catch (error) {
-        console.error('Error adding to cart:', error);
-        res.status(500).json({ error: 'Error adding to cart' });
+    // Log user info and validate productId, quantity
+    console.log('Authenticated User:', req.user);
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ message: 'User not authenticated' });
     }
+
+    if (!productId || quantity < 1) {
+      return res.status(400).json({ message: 'Invalid product ID or quantity' });
+    }
+
+    // Check if the item already exists in the cart
+    const existingCartItem = await Cart.findOne({ userId: req.user.id, productId });
+
+    if (existingCartItem) {
+      // Update quantity if item exists
+      existingCartItem.quantity += quantity;
+      existingCartItem.totalPrice = existingCartItem.price * existingCartItem.quantity;
+      
+      await existingCartItem.save();
+      
+      // Fetch updated cart items
+      const updatedCart = await Cart.find({ userId: req.user.id }).exec();
+      
+      return res.status(200).json({
+        message: 'Cart item quantity updated successfully',
+        cart: { items: updatedCart },
+      });
+    }
+
+    // Add new item to cart if it doesn't exist
+    const totalPrice = price * quantity;
+    const newCartItem = new Cart({
+      userId: req.user.id,
+      productId,
+      title,
+      price,
+      thumbnail,
+      brand,
+      stock,
+      rating,
+      totalPrice,
+      quantity,
+    });
+
+    await newCartItem.save();
+
+    // Fetch updated cart items
+    const updatedCart = await Cart.find({ userId: req.user.id }).exec();
+
+    res.status(201).json({
+      message: 'Item added to cart successfully',
+      cart: { items: updatedCart },
+    });
+  } catch (err) {
+    console.error('Server error:', err);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
 };
 
-// Fetch Cart
-// Fetch Cart
+
 exports.getCart = async (req, res) => {
-    const userId = req.params.userId;  // This should match the token passed from frontend
+  try {
+    const userId = req.user.id;
+    const cart = await Cart.find({ userId }).exec();  // Query for all items for the given user
 
-    try {
-        // Fetch only one cart for the given userId
-        const cart = await Cart.findOne({ userId });
+    console.log(cart);  // Log the fetched cart data
 
-        if (!cart) {
-            return res.status(404).json({ message: 'Cart not found' });
-        }
-
-        res.status(200).json({ cart });
-    } catch (error) {
-        console.error('Error fetching cart:', error);
-        res.status(500).json({ message: 'Internal Server Error' });
+    if (!cart || cart.length === 0) {
+      return res.status(404).json({ message: 'Cart not found or is empty' });
     }
+
+    return res.status(200).json({ items: cart });  // Send back cart items
+  } catch (error) {
+    console.error('Error fetching cart:', error);
+    return res.status(500).json({ message: 'Error fetching cart' });
+  }
 };
 
 
-// Remove Item from Cart
+
+
 exports.removeFromCart = async (req, res) => {
-    const token = req.header('Authorization')?.split(' ')[1];
-    if (!token) {
-      return res.status(401).json({ message: 'Access Denied: No Token Provided' });
+  try {
+    const { productId } = req.body;
+
+    if (!productId) {
+      return res.status(400).json({ message: 'Product ID is required' });
     }
-  
-    try {
-      const { productId } = req.body;
-  
-      console.log('Received productId:', productId); // Debug log
-  
-      if (!productId) {
-        return res.status(400).json({ message: 'Product ID is required' });
-      }
-  
-      const verified = jwt.verify(token, process.env.JWT_SECRET);
-      const userId = verified.id;
-  
-      const objectId = new mongoose.Types.ObjectId(productId); // Convert to ObjectId
-  
-      const cart = await Cart.findOne({ userId });
-      if (!cart) {
-        return res.status(404).json({ message: 'Cart not found' });
-      }
-  
-      cart.items = cart.items.filter(
-        (item) => item.productId.toString() !== objectId.toString()
-      );
-      await cart.save();
-  
-      res.status(200).json(cart); // Return the updated cart
-    } catch (error) {
-      console.error('Error removing item from cart:', error); // Log the error
-      res.status(500).json({ error: 'Server error while removing item' });
+
+    const userId = req.user.id;
+
+    const cartItem = await Cart.findOneAndDelete({ userId, productId });
+
+    if (!cartItem) {
+      return res.status(404).json({ message: 'Item not found in cart' });
     }
-  };
-  
+
+    const updatedCart = await Cart.find({ userId });
+
+    res.status(200).json({ message: 'Item removed', items: updatedCart });
+  } catch (error) {
+    console.error('Error removing item from cart:', error);
+    res.status(500).json({ error: 'Server error while removing item' });
+  }
+};
 
 // Clear the entire cart
 exports.clearCart = async (req, res) => {
-    const token = req.header('Authorization')?.split(' ')[1];
-    if (!token) return res.status(401).json({ message: 'Access Denied: No Token Provided' });
-  
-    try {
-      // Verify the token and get the userId from the decoded token
-      const verified = jwt.verify(token, process.env.JWT_SECRET);
-      const userId = verified.id;  // userId from the token
-  
-      // Find the user's cart and clear it
-      const cart = await Cart.findOne({ userId });
-      if (!cart) return res.status(404).json({ message: 'Cart not found' });
-  
-      // Clear all items in the cart
-      cart.items = [];
-      await cart.save();
-  
-      res.status(200).json({ message: 'Cart cleared' });
-    } catch (error) {
-      console.error('Error clearing cart:', error);
-      res.status(500).json({ error: 'Server error while clearing cart' });
-    }
-  };
-  
+  try {
+    const userId = req.user.id;
 
-  
+    const result = await Cart.deleteMany({ userId });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: 'Cart is already empty' });
+    }
+
+    res.status(200).json({ message: 'Cart cleared' });
+  } catch (error) {
+    console.error('Error clearing cart:', error);
+    res.status(500).json({ error: 'Server error while clearing cart' });
+  }
+};
+
+exports.updateCartQuantity = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const { quantity } = req.body;
+
+    if (!productId || quantity < 1) {
+      return res.status(400).json({ message: 'Invalid product ID or quantity' });
+    }
+
+    const cartItem = await Cart.findOne({ userId: req.user.id, productId });
+
+    if (!cartItem) {
+      return res.status(404).json({ message: 'Cart item not found' });
+    }
+
+    cartItem.quantity = quantity;
+    cartItem.totalPrice = cartItem.price * quantity;
+    await cartItem.save();
+
+    res.status(200).json({ message: 'Cart item updated successfully', cartItem });
+  } catch (error) {
+    console.error('Error updating cart quantity:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
