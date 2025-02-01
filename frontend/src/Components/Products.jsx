@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { fetchProductsByCategory } from '../Redux/productsSlice'; // Adjust path as necessary
+import { fetchProductsByCategory } from '../Redux/productsSlice'; 
 import axios from 'axios';
-import { FaHeart } from 'react-icons/fa'; // Import the heart icon
+import { FaHeart } from 'react-icons/fa'; 
 import '../App.css';
 
 const ProductsPage = ({ searchQuery }) => {
@@ -13,25 +13,23 @@ const ProductsPage = ({ searchQuery }) => {
   const [sortOrder, setSortOrder] = useState('lowToHigh');
   const [quantity, setQuantity] = useState(1);
   const [cart, setCart] = useState([]);
-  const [favorites, setFavorites] = useState([]); // State to track favorited products
+  const [favorites, setFavorites] = useState([]); 
 
   // Fetch products by category using Redux
   useEffect(() => {
     if (categories.length > 0) {
       categories.forEach((cat) => {
         if (!productsByCategory[cat]) {
-          dispatch(fetchProductsByCategory(cat)); // Dispatch Redux action
+          dispatch(fetchProductsByCategory(cat)); 
         }
       });
     }
   }, [categories, dispatch, productsByCategory]);
 
-  // Helper function to get all products
   const getAllProducts = () => {
     return categories.flatMap((cat) => productsByCategory[cat] || []);
   };
 
-  // Handle adding/removing favorites
   const handleToggleFavorite = async (productId) => {
     try {
       const token = localStorage.getItem('token');
@@ -46,9 +44,8 @@ const ProductsPage = ({ searchQuery }) => {
         return;
       }
   
-      // Ensure productId is a number (if backend expects a number)
       const payload = {
-        productId: Number(product.id), // Convert to number if necessary
+        productId: Number(product.id), 
         title: product.title,
         price: product.price,
         thumbnail: product.thumbnail,
@@ -86,7 +83,7 @@ const ProductsPage = ({ searchQuery }) => {
       }
 
       const response = await axios.post(
-        'http://localhost:5000/api/cart/add',
+        'https://globe-mart.onrender.com/api/cart/add',
         {
           productId: product.id,
           title: product.title,
@@ -103,14 +100,14 @@ const ProductsPage = ({ searchQuery }) => {
         }
       );
 
-      console.log('API response:', response.data); // Log the full response for inspection
+      console.log('API response:', response.data); 
 
       if (response.status === 200) {
         const updatedCartItems = response.data.cart?.items;
 
         if (updatedCartItems) {
           console.log('Cart updated:', updatedCartItems);
-          setCart(updatedCartItems); // Update the cart state with the new items
+          setCart(updatedCartItems); 
         } else {
           console.error('No items found in the response cart.');
         }
@@ -167,7 +164,7 @@ const ProductsPage = ({ searchQuery }) => {
                     color: favorites.includes(product.id) ? 'red' : 'gray',
                   }}
                 >
-                  <FaHeart size={20} /> {/* Use the FaHeart icon */}
+                  <FaHeart size={20} />}
                 </div>
                 <img src={product.thumbnail} alt={product.title} />
                 <h5>{product.title}</h5>
@@ -219,7 +216,7 @@ const ProductsPage = ({ searchQuery }) => {
                     color: favorites.includes(product.id) ? 'red' : 'gray',
                   }}
                 >
-                  <FaHeart size={20} /> {/* Use the FaHeart icon */}
+                  <FaHeart size={20} /> 
                 </div>
                 <img src={product.thumbnail} alt={product.title} />
                 <h5>{product.title}</h5>
@@ -256,7 +253,7 @@ const ProductsPage = ({ searchQuery }) => {
                       color: favorites.includes(product.id) ? 'red' : 'gray',
                     }}
                   >
-                    <FaHeart size={20} /> {/* Use the FaHeart icon */}
+                    <FaHeart size={20} />
                   </div>
                   <img src={product.thumbnail} alt={product.title} />
                   <h5>{product.title}</h5>
