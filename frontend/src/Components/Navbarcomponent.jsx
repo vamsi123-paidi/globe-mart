@@ -47,31 +47,36 @@ const Navbarcomponent = () => {
   const handleShowRegister = () => setShowRegister(true);
   const handleCloseRegister = () => setShowRegister(false);
 
- const handleLogin = async (e) => {
-    e.preventDefault();
-    if (!email || !password) {
-      alert('Email and password are required.');
-      return;
-    }
+const handleLogin = async (e) => {
+  e.preventDefault();
 
-    try {
-      const response = await axios.post('https://globe-mart.onrender.com/api/auth/login', {
-        email,
-        password,
-      });
+  if (!email || !password) {
+    alert('Email and password are required.');
+    return;
+  }
 
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('userId', userId);
-        setIsLoggedIn(true);
-        setShowLogin(false);
-        navigate('/');
-      }
-    } catch (error) {
-      console.error('Login failed:', error);
-      alert('Login failed');
+  try {
+    const response = await axios.post('https://globe-mart.onrender.com/api/auth/login', {
+      email,
+      password,
+    });
+
+    if (response.data.token && response.data.userId) {
+      // Store token and userId in local storage
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('userId', response.data.userId);
+
+      setIsLoggedIn(true);
+      setShowLogin(false);
+      navigate('/');
+    } else {
+      alert('Login failed: Missing token or userId in response.');
     }
-  };
+  } catch (error) {
+    console.error('Login failed:', error);
+    alert('Login failed');
+  }
+};
 
   const handleRegister = async (e) => {
     e.preventDefault();
