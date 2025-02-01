@@ -150,14 +150,14 @@ const CartPage = () => {
                     className="form-control w-27"
                   />
                 </div>
-                <button className="btn btn-outline-danger mb-2 w-100" onClick={() => handleRemove(item.productId)}>
+                <button className="btn btn-outline-danger mb-2" onClick={() => handleRemove(item.productId)}>
                   Remove
                 </button>
               </div>
             ))}
           </div>
           <div className="text-center mt-4">
-            <button className="btn btn-warning" onClick={handleClearCart}>
+            <button className="btn btn-warning mb-3" onClick={handleClearCart}>
               Clear Cart
             </button>
             <h4 className="totalprice">Total Price: ${totalPrice}</h4>

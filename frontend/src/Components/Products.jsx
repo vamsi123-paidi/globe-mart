@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { fetchProductsByCategory } from '../Redux/productsSlice'; // Adjust path as necessary
 import axios from 'axios';
+import { FaHeart } from 'react-icons/fa'; // Import the heart icon
 import '../App.css';
 
 const ProductsPage = ({ searchQuery }) => {
@@ -12,7 +13,7 @@ const ProductsPage = ({ searchQuery }) => {
   const [sortOrder, setSortOrder] = useState('lowToHigh');
   const [quantity, setQuantity] = useState(1);
   const [cart, setCart] = useState([]);
-
+  const [favorites, setFavorites] = useState([]); // State to track favorited products
 
   // Fetch products by category using Redux
   useEffect(() => {
@@ -24,6 +25,57 @@ const ProductsPage = ({ searchQuery }) => {
       });
     }
   }, [categories, dispatch, productsByCategory]);
+
+  // Helper function to get all products
+  const getAllProducts = () => {
+    return categories.flatMap((cat) => productsByCategory[cat] || []);
+  };
+
+  // Handle adding/removing favorites
+  const handleToggleFavorite = async (productId) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Please log in to add favorites.');
+        return;
+      }
+  
+      const product = getAllProducts().find((p) => p.id === productId);
+      if (!product) {
+        alert('Product not found.');
+        return;
+      }
+  
+      // Ensure productId is a number (if backend expects a number)
+      const payload = {
+        productId: Number(product.id), // Convert to number if necessary
+        title: product.title,
+        price: product.price,
+        thumbnail: product.thumbnail,
+        brand: product.brand,
+        stock: product.stock,
+        rating: product.rating,
+      };
+  
+      console.log('Request Payload:', payload);
+  
+      const response = await axios.post(
+        'http://localhost:5000/api/favorites/add',
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      setFavorites([...favorites, productId]);
+      alert('Product added to favorites.');
+    } catch (err) {
+      console.error('Error toggling favorite:', err);
+      alert('Failed to update favorites. Please try again.');
+    }
+  };
 
   const handleAddToCart = async (product) => {
     try {
@@ -93,7 +145,7 @@ const ProductsPage = ({ searchQuery }) => {
   const formattedCategory = category ? category.replace(/-/g, ' ') : null;
 
   if (searchQuery) {
-    const allProducts = categories.flatMap((cat) => productsByCategory[cat] || []);
+    const allProducts = getAllProducts();
     const filteredProducts = filterProducts(allProducts);
 
     return (
@@ -103,6 +155,20 @@ const ProductsPage = ({ searchQuery }) => {
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
               <div key={product.id} className="product-card">
+                {/* Favorites Icon */}
+                <div
+                  className="favorite-icon"
+                  onClick={() => handleToggleFavorite(product.id)}
+                  style={{
+                    position: 'absolute',
+                    top: '10px',
+                    right: '10px',
+                    cursor: 'pointer',
+                    color: favorites.includes(product.id) ? 'red' : 'gray',
+                  }}
+                >
+                  <FaHeart size={20} /> {/* Use the FaHeart icon */}
+                </div>
                 <img src={product.thumbnail} alt={product.title} />
                 <h5>{product.title}</h5>
                 <p className="price">Price: ${product.price}</p>
@@ -141,6 +207,20 @@ const ProductsPage = ({ searchQuery }) => {
           <div className="products-row">
             {sortProducts(productsByCategory[formattedCategory] || []).map((product) => (
               <div key={product.id} className="product-card">
+                {/* Favorites Icon */}
+                <div
+                  className="favorite-icon"
+                  onClick={() => handleToggleFavorite(product.id)}
+                  style={{
+                    position: 'absolute',
+                    top: '10px',
+                    right: '10px',
+                    cursor: 'pointer',
+                    color: favorites.includes(product.id) ? 'red' : 'gray',
+                  }}
+                >
+                  <FaHeart size={20} /> {/* Use the FaHeart icon */}
+                </div>
                 <img src={product.thumbnail} alt={product.title} />
                 <h5>{product.title}</h5>
                 <p className="price">Price: ${product.price}</p>
@@ -164,6 +244,20 @@ const ProductsPage = ({ searchQuery }) => {
             <div className="products-row">
               {sortProducts(productsByCategory[cat] || []).map((product) => (
                 <div key={product.id} className="product-card">
+                  {/* Favorites Icon */}
+                  <div
+                    className="favorite-icon"
+                    onClick={() => handleToggleFavorite(product.id)}
+                    style={{
+                      position: 'absolute',
+                      top: '10px',
+                      right: '10px',
+                      cursor: 'pointer',
+                      color: favorites.includes(product.id) ? 'red' : 'gray',
+                    }}
+                  >
+                    <FaHeart size={20} /> {/* Use the FaHeart icon */}
+                  </div>
                   <img src={product.thumbnail} alt={product.title} />
                   <h5>{product.title}</h5>
                   <p className="price">Price: ${product.price}</p>

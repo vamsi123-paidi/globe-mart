@@ -33,9 +33,8 @@ h1 {
   text-transform: uppercase;
 }
 
-/* Background and container styling */
 .Search-container {
-  background: linear-gradient(135deg, rgba(255, 118, 94, 0.932), rgba(255, 99, 71, 0.767), rgba(255, 216, 100, 0.856));
+  background: linear-gradient(135deg, rgba(248, 40, 3, 0.932), rgb(248, 63, 30), rgba(255, 162, 100, 0.856));
   height: 350px;
   display: flex;
   flex-direction: column;
@@ -49,6 +48,8 @@ h1 {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   border-radius: 15px;
   margin-top: 70px; /* Prevents overlap with navbar */
+  /* margin-bottom: 20px; */
+  /* padding-bottom: 40px; */
 }
 
 /* Smooth background animation */
@@ -114,7 +115,9 @@ h1 {
 }
 
 .form-container input {
-  width: 80%; /* 80% width for input */
+  width: 80%; 
+  margin-top: 15px;
+  /* margin-bottom: 10px; */
   padding: 15px;
   border: 1px solid #ff6347;
   border-radius: 5px;
@@ -131,18 +134,15 @@ h1 {
 }
 
 /* Search button */
-button {
-  width: 20%; /* 20% width for button */
-  border: none;
+.button-search {
+  width: 20%;
   border-radius: 5px;
   background-color: #ff6347;
+  align-items: center;
   color: #fff;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 3px 10px rgba(255, 99, 71, 0.2);
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
+
 
 button:hover {
   background-color: #e55347;
@@ -172,7 +172,7 @@ button:active {
     margin-bottom: 10px;
   }
 
-  button {
+  .button-search {
     width: 100%; /* Button takes 100% width on small screens */
   }
 }
@@ -313,5 +313,210 @@ button:active {
   .product-card {
     flex: 0 0 80%;
     max-width: 80%;
+  }
+}
+
+/* Offers Page Container */
+.offers-page-container {
+  padding: 20px;
+  text-align: center;
+  background: linear-gradient(135deg, #ff7e5f, #ff6f61);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+}
+
+/* Offer Details */
+.offer-details {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  max-width: 600px;
+  width: 100%;
+}
+
+.offer-details h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.offer-details p {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+.offer-details ul {
+  list-style: none;
+  padding: 0;
+}
+
+.offer-details ul li {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
+
+/* Buttons */
+.offer-details button {
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.offer-details button.btn-primary {
+  background-color: #ff6347;
+  color: #fff;
+}
+
+.offer-details button.btn-primary:hover {
+  background-color: #e55347;
+}
+
+.offer-details button.btn-secondary {
+  background-color: #fff;
+  color: #ff6347;
+}
+
+.offer-details button.btn-secondary:hover {
+  background-color: #f8f8f8;
+}
+
+/* Common Styles for All Offer Pages */
+.electronics-page-container,
+.apparel-page-container,
+.home-appliances-page-container {
+  padding: 20px;
+  text-align: center;
+  background: linear-gradient(135deg, #ff7e5f, #ff6f61);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+}
+
+.electronics-page-container h1,
+.apparel-page-container h1,
+.home-appliances-page-container h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.electronics-page-container p,
+.apparel-page-container p,
+.home-appliances-page-container p {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  animation: fadeIn 1.5s ease-in-out;
+}
+
+.electronics-page-container ul,
+.apparel-page-container ul,
+.home-appliances-page-container ul {
+  list-style: none;
+  padding: 0;
+  text-align: left;
+  animation: slideIn 1s ease-in-out;
+}
+
+.electronics-page-container ul li,
+.apparel-page-container ul li,
+.home-appliances-page-container ul li {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: fadeIn 2s ease-in-out;
+}
+
+/* Images */
+.electronics-page-container img,
+.apparel-page-container img,
+.home-appliances-page-container img {
+  width: 300px;
+  height: 300px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  animation: zoomIn 1s ease-in-out;
+}
+
+/* Buttons */
+.electronics-page-container button,
+.apparel-page-container button,
+.home-appliances-page-container button {
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  animation: fadeIn 2.5s ease-in-out;
+}
+
+.electronics-page-container button.btn-primary,
+.apparel-page-container button.btn-primary,
+.home-appliances-page-container button.btn-primary {
+  background-color: #ff6347;
+  color: #fff;
+}
+
+.electronics-page-container button.btn-primary:hover,
+.apparel-page-container button.btn-primary:hover,
+.home-appliances-page-container button.btn-primary:hover {
+  background-color: #e55347;
+}
+
+.electronics-page-container button.btn-secondary,
+.apparel-page-container button.btn-secondary,
+.home-appliances-page-container button.btn-secondary {
+  background-color: #fff;
+  color: #ff6347;
+}
+
+.electronics-page-container button.btn-secondary:hover,
+.apparel-page-container button.btn-secondary:hover,
+.home-appliances-page-container button.btn-secondary:hover {
+  background-color: #f8f8f8;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes zoomIn {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
   }
 }

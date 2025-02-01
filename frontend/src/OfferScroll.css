@@ -14,8 +14,7 @@
 .offers-scroll {
   display: flex;
   white-space: nowrap;
-  animation: scrollOffers 12s linear infinite;
-  /* Ensure seamless scrolling */
+  animation: scrollOffers 20s linear infinite; /* Adjusted animation duration */
 }
 
 /* Styling for Each Offer */
@@ -33,6 +32,7 @@
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  flex-shrink: 0; /* Prevent items from shrinking */
 }
 
 /* Hover Effects for Offer Items */

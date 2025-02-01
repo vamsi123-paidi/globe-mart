@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Form from 'react-bootstrap/Form';
 import '../App.css';
@@ -7,6 +7,7 @@ const Searchbar = ({ setSearchQuery }) => {
   const [searchInput, setSearchInput] = useState('');
   const [quote, setQuote] = useState('');
   const fullQuote = "Find what you love, and let it fill your cart!";
+  const animationFrameRef = useRef(null);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -18,16 +19,18 @@ const Searchbar = ({ setSearchQuery }) => {
 
     const typeQuote = () => {
       if (currentIndex < fullQuote.length) {
-        setQuote(fullQuote.slice(0, currentIndex + 1)); 
+        setQuote(fullQuote.slice(0, currentIndex + 1));
         currentIndex++;
-        setTimeout(typeQuote, 100); 
+        animationFrameRef.current = requestAnimationFrame(typeQuote);
       }
     };
 
-    typeQuote(); 
+    animationFrameRef.current = requestAnimationFrame(typeQuote);
 
     return () => {
-      currentIndex = fullQuote.length; 
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
     };
   }, []);
 
@@ -46,7 +49,7 @@ const Searchbar = ({ setSearchQuery }) => {
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
         />
-        <button variant="outline-success" type="submit">
+        <button variant="outline-success" type="submit" className='button-search'>
           Search
         </button>
       </Form>

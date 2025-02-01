@@ -80,7 +80,12 @@ const PaymentMethods = () => {
             onChange={handlePaymentMethodChange}
           />
           <label className="cod">
-            <i className="fas fa-money-bill-wave payment-icon"></i> Cash on Delivery
+          <img
+              src="https://png.pngtree.com/png-clipart/20210523/ourmid/pngtree-cash-on-delivery-green-stamp-cod-png-image_3342456.jpg"
+              alt="PhonePe"
+              className="payment-icon"
+            />
+             Cash on Delivery
           </label>
         </div>
       </div>

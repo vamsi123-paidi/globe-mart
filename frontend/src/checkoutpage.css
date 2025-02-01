@@ -154,7 +154,7 @@ h2 {
 .order-summary p {
     margin-bottom: 1rem;
     font-size: 1.2rem;
-    color: white;
+    color: #000 !important;
 }
 
 .order-summary p:last-child {

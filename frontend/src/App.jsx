@@ -10,6 +10,11 @@ import Navbarcomponent from './Components/Navbarcomponent';
 import Scrollingadd from './Components/Scrollingadd';
 import Checkoutpage from './Components/Checkoutpage';
 import PaymentMethods from './Components/PaymentMethods';
+import FavoritesPage from './Components/FavoritesPage';
+import OffersPage from './Components/OffersPage';
+import ElectronicsPage from './Components/ElectronicsPage';
+import ApparelPage from './Components/ApparelPage';
+import HomeAppliancesPage from './Components/HomeAppliancesPage';
 
 const App = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -37,6 +42,11 @@ const App = () => {
         <Route path="/cart" element={<CartPage />} />
         <Route exact path="/checkout" element={<Checkoutpage />} />
         <Route path='/payment' element={<PaymentMethods />} />
+        <Route path="/favorites" element={<FavoritesPage />} />
+        <Route path="/offers" element={<OffersPage />} /> 
+        <Route path="/electronics" element={<ElectronicsPage />} /> 
+        <Route path="/apparel" element={<ApparelPage />} /> 
+        <Route path="/home-appliances" element={<HomeAppliancesPage />} />
       </Routes>
       <Footer isEmptyCart={isEmptyCart} />
     </div>
