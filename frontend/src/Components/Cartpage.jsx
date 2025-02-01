@@ -21,7 +21,7 @@ const CartPage = () => {
           return;
         }
 
-        const response = await axios.get('http://localhost:5000/api/cart', {
+        const response = await axios.get('https://globe-mart.onrender.com/api/cart', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -30,7 +30,7 @@ const CartPage = () => {
         console.log('Cart data from API:', response.data);
 
         if (response.data.items) {
-          setCart(response.data.items);  // Update state with the cart items
+          setCart(response.data.items); 
         } else {
           setError('No cart found for this user');
         }
@@ -54,7 +54,7 @@ const CartPage = () => {
       }
 
       const response = await axios.put(
-        `http://localhost:5000/api/cart/${productId}`,
+        `https://globe-mart.onrender.com/api/cart/${productId}`,
         { quantity: newQuantity },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -81,7 +81,7 @@ const CartPage = () => {
     const token = localStorage.getItem('token');
     try {
       const response = await axios.post(
-        'http://localhost:5000/api/cart/remove',
+        'https://globe-mart.onrender.com/api/cart/remove',
         { productId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -98,12 +98,12 @@ const CartPage = () => {
   const handleClearCart = async () => {
     const token = localStorage.getItem('token');
     try {
-      const response = await axios.delete('http://localhost:5000/api/cart', {
+      const response = await axios.delete('https://globe-mart.onrender.com/api/cart', {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       if (response.status === 200) {
-        setCart([]); // Clear cart state
+        setCart([]);
       }
     } catch (error) {
       console.error('Error clearing cart:', error);
