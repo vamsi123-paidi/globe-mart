@@ -30,7 +30,7 @@ const CartPage = () => {
         console.log('Cart data from API:', response.data);
 
         if (response.data.items) {
-          setCart(response.data.items); 
+          setCart(response.data.items);  // Update state with the cart items
         } else {
           setError('No cart found for this user');
         }
@@ -103,7 +103,7 @@ const CartPage = () => {
       });
 
       if (response.status === 200) {
-        setCart([]);
+        setCart([]); // Clear cart state
       }
     } catch (error) {
       console.error('Error clearing cart:', error);
