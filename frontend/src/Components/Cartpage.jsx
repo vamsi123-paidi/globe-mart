@@ -21,7 +21,6 @@ const CartPage = () => {
         if (!token || !userId) {
           setError('User not logged in. Please log in to view your cart.');
           setLoading(false);
-          navigate('/login'); // Redirect to login page
           return;
         }
 
@@ -38,7 +37,6 @@ const CartPage = () => {
           localStorage.removeItem('token');
           localStorage.removeItem('userId');
           setError('Session expired. Please log in again.');
-          navigate('/login'); // Redirect to login page
           return;
         }
 
@@ -56,7 +54,7 @@ const CartPage = () => {
     };
 
     fetchCart();
-  }, [navigate]);
+  }, []);
 
   const handleQuantityChange = async (productId, newQuantity) => {
     try {
@@ -134,38 +132,34 @@ const CartPage = () => {
   return (
     <div className="container my-5">
       <h2 className="text-center mb-4">Shopping Cart</h2>
-      {cart && cart.length === 0 ? (
+      {cart.length === 0 ? (
         <p className="text-center">Your cart is empty.</p>
       ) : (
         <>
           <div className="products-row">
-            {cart && cart.length > 0 ? (
-              cart.map((item, index) => (
-                <div key={`${item.productId}-${index}`} className="product-card">
-                  <img src={item.thumbnail || 'default-image.jpg'} alt={item.title} />
-                  <h5>{item.title}</h5>
-                  <p className="price">Price: ${item.price}</p>
-                  <p className="brand">Brand: {item.brand}</p>
-                  <p className="rating">Rating: {item.rating} ⭐</p>
-                  <p className="stock">Stock: {item.stock}</p>
-                  <div className="mb-2">
-                    <label className="me-2">Quantity:</label>
-                    <input
-                      type="number"
-                      value={item.quantity}
-                      min="1"
-                      onChange={(e) => handleQuantityChange(item.productId, parseInt(e.target.value, 10))}
-                      className="form-control w-27"
-                    />
-                  </div>
-                  <button className="btn btn-outline-danger mb-2" onClick={() => handleRemove(item.productId)}>
-                    Remove
-                  </button>
+            {cart.map((item, index) => (
+              <div key={`${item.productId}-${index}`} className="product-card">
+                <img src={item.thumbnail || 'default-image.jpg'} alt={item.title} />
+                <h5>{item.title}</h5>
+                <p className="price">Price: ${item.price}</p>
+                <p className="brand">Brand: {item.brand}</p>
+                <p className="rating">Rating: {item.rating} ⭐</p>
+                <p className="stock">Stock: {item.stock}</p>
+                <div className="mb-2">
+                  <label className="me-2">Quantity:</label>
+                  <input
+                    type="number"
+                    value={item.quantity}
+                    min="1"
+                    onChange={(e) => handleQuantityChange(item.productId, parseInt(e.target.value, 10))}
+                    className="form-control w-27"
+                  />
                 </div>
-              ))
-            ) : (
-              <p className="text-center">No items in the cart.</p>
-            )}
+                <button className="btn btn-outline-danger mb-2" onClick={() => handleRemove(item.productId)}>
+                  Remove
+                </button>
+              </div>
+            ))}
           </div>
           <div className="text-center mt-4">
             <button className="btn btn-warning mb-3" onClick={handleClearCart}>
