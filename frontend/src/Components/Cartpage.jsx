@@ -24,19 +24,20 @@ const CartPage = () => {
         const response = await axios.get('https://globe-mart.onrender.com/api/cart', {
           headers: {
             Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
           },
         });
 
         console.log('Cart data from API:', response.data);
 
         if (response.data.items) {
-          setCart(response.data.items);  // Update state with the cart items
+          setCart(response.data.items); // Update state with the cart items
         } else {
           setError('No cart found for this user');
         }
       } catch (err) {
         console.error('Error fetching cart:', err);
-        setError('Failed to fetch cart');
+        setError('Failed to fetch cart. Please try again.');
       } finally {
         setLoading(false);
       }
@@ -61,7 +62,6 @@ const CartPage = () => {
 
       console.log('Quantity updated successfully:', response.data);
 
-      // Update cart state
       setCart((prevItems) =>
         prevItems.map((item) =>
           item.productId === productId ? { ...item, quantity: newQuantity } : item
@@ -71,11 +71,6 @@ const CartPage = () => {
       console.error('Error updating quantity:', error);
     }
   };
-
-
-
-
-
 
   const handleRemove = async (productId) => {
     const token = localStorage.getItem('token');
@@ -114,11 +109,9 @@ const CartPage = () => {
   const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
 
   const handleProceedToCheckout = () => {
-    // Navigate to the checkout page
     navigate('/checkout');
   };
 
-  // Debug: Log the cart state
   console.log('Current cart:', cart);
 
   if (loading) return <p>Loading...</p>;
