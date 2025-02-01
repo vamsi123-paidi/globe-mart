@@ -520,3 +520,120 @@ button:active {
     transform: scale(1);
   }
 }
+
+/* Profile Page Container */
+.profile-page-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Profile Section */
+.profile-section {
+  margin-bottom: 30px;
+}
+
+.profile-section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-section form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile-section form label {
+  font-weight: bold;
+}
+
+.profile-section form input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.profile-section form button {
+  padding: 10px;
+  background-color: #ff6347;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.profile-section form button:hover {
+  background-color: #e55347;
+}
+
+/* Order History Section */
+.order-history-section {
+  margin-bottom: 30px;
+}
+
+.order-history-section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.order-history-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.order-history-section ul li {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+/* Favorites Section */
+.favorites-section {
+  margin-bottom: 30px;
+}
+
+.favorites-section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.favorites-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.favorite-product {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  width: 150px;
+}
+
+.favorite-product img {
+  width: 100px;
+  height: 100px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.favorite-product h3 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.favorite-product p {
+  font-size: 1rem;
+}

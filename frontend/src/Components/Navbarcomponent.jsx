@@ -137,6 +137,7 @@ const Navbarcomponent = () => {
               <Nav className="justify-content-end flex-grow-1 pe-3">
                 <Nav.Link as={Link} to="/" className="nav-link text-dark">Home</Nav.Link>
                 <Nav.Link as={Link} to="/favorites" className="nav-link text-dark">favorites</Nav.Link>
+                <Nav.Link as={Link} to="/profile" className="nav-link text-dark">Profile</Nav.Link>
                 <NavDropdown title="Categories" id="navbarScrollingDropdown" className="dropdown-title">
                   {categories.map((category) => (
                     <NavDropdown.Item

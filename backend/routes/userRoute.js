@@ -1,7 +1,9 @@
 const express = require('express');
-const { register, login } = require('../controllers/user');
+const { register, login, getUserData, updateUserData } = require('../controllers/user');
 const { body, validationResult } = require('express-validator');
 const router = express.Router();
+
+const authMiddleware = require('../middleware/authMiddleware'); // Ensure this is used for authentication
 
 router.post('/register', [
   body('email').isEmail().withMessage('Invalid email format'),
@@ -14,3 +16,8 @@ router.post('/login', [
 ], login);
 
 module.exports = router;
+
+router.get('/', authMiddleware, getUserData)
+
+// Update user profile (only email for now)
+router.put('/profile', authMiddleware,updateUserData)

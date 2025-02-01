@@ -15,6 +15,7 @@ import OffersPage from './Components/OffersPage';
 import ElectronicsPage from './Components/ElectronicsPage';
 import ApparelPage from './Components/ApparelPage';
 import HomeAppliancesPage from './Components/HomeAppliancesPage';
+import ProfilePage from './Components/ProfiePage';
 
 const App = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -47,6 +48,8 @@ const App = () => {
         <Route path="/electronics" element={<ElectronicsPage />} /> 
         <Route path="/apparel" element={<ApparelPage />} /> 
         <Route path="/home-appliances" element={<HomeAppliancesPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+
       </Routes>
       <Footer isEmptyCart={isEmptyCart} />
     </div>

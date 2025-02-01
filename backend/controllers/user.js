@@ -58,3 +58,46 @@ exports.login = async (req, res) => {
     res.status(500).json({ error: 'Server error during login' });
   }
 };
+
+exports.getUserData = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json(user);
+  } catch (err) {
+    console.error('Error fetching user profile:', err);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+exports.updateUserData =  async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Hash the new password if provided
+    let updateData = { email };
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      updateData.password = await bcrypt.hash(password, salt);
+    }
+
+    // Update the user
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      updateData,
+      { new: true }
+    ).select('-password');
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json(user);
+  } catch (err) {
+    console.error('Error updating user profile:', err);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+

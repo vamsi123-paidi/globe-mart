@@ -30,6 +30,7 @@ app.use(cors({
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
+app.use('/api/user', authRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/favorites', favoritesRoutes); // Add favorites routes
 

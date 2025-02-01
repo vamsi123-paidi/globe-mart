@@ -37,6 +37,52 @@ const FavoritesPage = () => {
     fetchFavorites();
   }, []);
 
+  const handleAddToCart = async (product) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('No token found in localStorage');
+        return;
+      }
+
+      const response = await axios.post(
+        'http://localhost:5000/api/cart/add',
+        {
+          productId: product.id,
+          title: product.title,
+          price: product.price,
+          thumbnail: product.thumbnail,
+          brand: product.brand,
+          stock: product.stock,
+          rating: product.rating,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log('API response:', response.data); // Log the full response for inspection
+
+      if (response.status === 200) {
+        const updatedCartItems = response.data.cart?.items;
+
+        if (updatedCartItems) {
+          console.log('Cart updated:', updatedCartItems);
+          setCart(updatedCartItems); // Update the cart state with the new items
+        } else {
+          console.error('No items found in the response cart.');
+        }
+      }
+    } catch (error) {
+      console.error('Failed to add to cart', error);
+      if (error.response) {
+        console.error('Response error:', error.response.data);
+      }
+    }
+  };
+
   // Remove from favorites
   const handleRemoveFavorite = async (productId) => {
     try {
