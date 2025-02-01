@@ -1,27 +1,25 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import '../App.css'; // Use your existing styles
+import '../App.css'; 
 
 const OffersPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { offer } = location.state || { offer: "No offer selected." }; // Get the offer from navigation state
+  const { offer } = location.state || { offer: "No offer selected." };
 
-  // Function to handle navigation to the home page
   const handleGoToHome = () => {
-    navigate('/'); // Navigate to the home page
+    navigate('/'); 
   };
 
-  // Function to handle navigation to specific offer pages
   const handleGoToOfferPage = () => {
     if (offer.includes("Electronics")) {
-      navigate('/electronics'); // Example: Redirect to electronics page
+      navigate('/electronics');
     } else if (offer.includes("Apparel")) {
-      navigate('/apparel'); // Example: Redirect to apparel page
+      navigate('/apparel'); 
     } else if (offer.includes("Home Appliances")) {
-      navigate('/home-appliances'); // Example: Redirect to home appliances page
+      navigate('/home-appliances');
     } else {
-      navigate('/'); // Default to home page
+      navigate('/'); 
     }
   };
 
