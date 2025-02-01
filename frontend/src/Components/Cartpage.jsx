@@ -10,19 +10,21 @@ const CartPage = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    console.log('Token:', localStorage.getItem('token'));
+    console.log('User ID:', localStorage.getItem('userId'));
+
     const fetchCart = async () => {
       try {
         const token = localStorage.getItem('token');
         const userId = localStorage.getItem('userId');
 
-        // Check if token and userId exist
         if (!token || !userId) {
           setError('User not logged in. Please log in to view your cart.');
           setLoading(false);
+          navigate('/login'); // Redirect to login page
           return;
         }
 
-        // Fetch cart data
         const response = await axios.get('https://globe-mart.onrender.com/api/cart', {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -31,9 +33,17 @@ const CartPage = () => {
 
         console.log('API response:', response.data);
 
-        // Check if cart items exist in the response
+        if (response.status === 401) {
+          // Token is invalid or expired
+          localStorage.removeItem('token');
+          localStorage.removeItem('userId');
+          setError('Session expired. Please log in again.');
+          navigate('/login'); // Redirect to login page
+          return;
+        }
+
         if (response.data && response.data.items) {
-          setCart(response.data.items); // Update cart state
+          setCart(response.data.items);
         } else {
           setError('No items found in your cart.');
         }
@@ -46,7 +56,7 @@ const CartPage = () => {
     };
 
     fetchCart();
-  }, []);
+  }, [navigate]);
 
   const handleQuantityChange = async (productId, newQuantity) => {
     try {
@@ -56,7 +66,6 @@ const CartPage = () => {
         return;
       }
 
-      // Update quantity in the backend
       const response = await axios.put(
         `https://globe-mart.onrender.com/api/cart/${productId}`,
         { quantity: newQuantity },
@@ -65,7 +74,6 @@ const CartPage = () => {
 
       console.log('Quantity updated successfully:', response.data);
 
-      // Update cart state
       setCart((prevItems) =>
         prevItems.map((item) =>
           item.productId === productId ? { ...item, quantity: newQuantity } : item
@@ -80,7 +88,6 @@ const CartPage = () => {
   const handleRemove = async (productId) => {
     const token = localStorage.getItem('token');
     try {
-      // Remove item from the backend
       const response = await axios.post(
         'https://globe-mart.onrender.com/api/cart/remove',
         { productId },
@@ -89,7 +96,7 @@ const CartPage = () => {
 
       if (response.status === 200) {
         console.log('Item removed successfully:', response.data.items);
-        setCart(response.data.items); // Update cart state
+        setCart(response.data.items);
       }
     } catch (error) {
       console.error('Error removing product:', error);
@@ -100,13 +107,12 @@ const CartPage = () => {
   const handleClearCart = async () => {
     const token = localStorage.getItem('token');
     try {
-      // Clear cart in the backend
       const response = await axios.delete('https://globe-mart.onrender.com/api/cart', {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       if (response.status === 200) {
-        setCart([]); // Clear cart state
+        setCart([]);
       }
     } catch (error) {
       console.error('Error clearing cart:', error);
@@ -120,7 +126,6 @@ const CartPage = () => {
     navigate('/checkout');
   };
 
-  // Debug: Log the cart state
   console.log('Current cart:', cart);
 
   if (loading) return <p>Loading...</p>;
