@@ -57,7 +57,7 @@ const ProductsPage = ({ searchQuery }) => {
       console.log('Request Payload:', payload);
   
       const response = await axios.post(
-        'http://localhost:5000/api/favorites/add',
+        'https://globe-mart.onrender.com/api/favorites/add',
         payload,
         {
           headers: {
