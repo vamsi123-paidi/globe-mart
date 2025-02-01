@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { FaHeart } from 'react-icons/fa'; // Import the heart icon
-import '../App.css'; // Ensure your styles are applied
+import { FaHeart } from 'react-icons/fa'; 
+import '../App.css';
 
 const FavoritesPage = () => {
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch favorites from the backend
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
@@ -19,7 +18,7 @@ const FavoritesPage = () => {
           return;
         }
 
-        const response = await axios.get('http://localhost:5000/api/favorites', {
+        const response = await axios.get('https://globe-mart.onrender.com/api/favorites', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -46,7 +45,7 @@ const FavoritesPage = () => {
       }
 
       const response = await axios.post(
-        'http://localhost:5000/api/cart/add',
+        'https://globe-mart.onrender.com/api/cart/add',
         {
           productId: product.id,
           title: product.title,
@@ -63,14 +62,14 @@ const FavoritesPage = () => {
         }
       );
 
-      console.log('API response:', response.data); // Log the full response for inspection
+      console.log('API response:', response.data); 
 
       if (response.status === 200) {
         const updatedCartItems = response.data.cart?.items;
 
         if (updatedCartItems) {
           console.log('Cart updated:', updatedCartItems);
-          setCart(updatedCartItems); // Update the cart state with the new items
+          setCart(updatedCartItems); 
         } else {
           console.error('No items found in the response cart.');
         }
@@ -83,7 +82,6 @@ const FavoritesPage = () => {
     }
   };
 
-  // Remove from favorites
   const handleRemoveFavorite = async (productId) => {
     try {
       const token = localStorage.getItem('token');
@@ -93,7 +91,7 @@ const FavoritesPage = () => {
       }
 
       await axios.post(
-        'http://localhost:5000/api/favorites/remove',
+        'https://globe-mart.onrender.com/api/favorites/remove',
         { productId },
         {
           headers: {
@@ -102,7 +100,6 @@ const FavoritesPage = () => {
         }
       );
 
-      // Update the favorites list
       setFavorites(favorites.filter((item) => item.productId !== productId));
     } catch (err) {
       console.error('Error removing favorite:', err);
@@ -129,7 +126,7 @@ const FavoritesPage = () => {
                   top: '10px',
                   right: '10px',
                   cursor: 'pointer',
-                  color: 'red', // Always red since it's in favorites
+                  color: 'red', 
                 }}
               >
                 <FaHeart size={20} />
@@ -142,7 +139,7 @@ const FavoritesPage = () => {
               <p className="stock">Stock: {product.stock}</p>
               <button
                 className="btn btn-outline-primary w-100"
-                onClick={() => handleAddToCart(product)} // Add to cart functionality (if needed)
+                onClick={() => handleAddToCart(product)} 
               >
                 Add to cart
               </button>
