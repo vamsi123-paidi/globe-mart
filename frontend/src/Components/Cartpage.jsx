@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../App.css';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 
 const CartPage = () => {
   const navigate = useNavigate();
@@ -15,28 +15,31 @@ const CartPage = () => {
         const token = localStorage.getItem('token');
         const userId = localStorage.getItem('userId');
 
+        // Check if token and userId exist
         if (!token || !userId) {
-          setError('User not logged in');
+          setError('User not logged in. Please log in to view your cart.');
           setLoading(false);
           return;
         }
 
+        // Fetch cart data
         const response = await axios.get('https://globe-mart.onrender.com/api/cart', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
-        console.log('Cart data from API:', response.data);
+        console.log('API response:', response.data);
 
-        if (response.data.items) {
-          setCart(response.data.items);  // Update state with the cart items
+        // Check if cart items exist in the response
+        if (response.data && response.data.items) {
+          setCart(response.data.items); // Update cart state
         } else {
-          setError('No cart found for this user');
+          setError('No items found in your cart.');
         }
       } catch (err) {
         console.error('Error fetching cart:', err);
-        setError('Failed to fetch cart');
+        setError('Failed to fetch cart. Please try again later.');
       } finally {
         setLoading(false);
       }
@@ -53,6 +56,7 @@ const CartPage = () => {
         return;
       }
 
+      // Update quantity in the backend
       const response = await axios.put(
         `https://globe-mart.onrender.com/api/cart/${productId}`,
         { quantity: newQuantity },
@@ -69,17 +73,14 @@ const CartPage = () => {
       );
     } catch (error) {
       console.error('Error updating quantity:', error);
+      setError('Failed to update quantity. Please try again.');
     }
   };
-
-
-
-
-
 
   const handleRemove = async (productId) => {
     const token = localStorage.getItem('token');
     try {
+      // Remove item from the backend
       const response = await axios.post(
         'https://globe-mart.onrender.com/api/cart/remove',
         { productId },
@@ -88,16 +89,18 @@ const CartPage = () => {
 
       if (response.status === 200) {
         console.log('Item removed successfully:', response.data.items);
-        setCart(response.data.items);
+        setCart(response.data.items); // Update cart state
       }
     } catch (error) {
       console.error('Error removing product:', error);
+      setError('Failed to remove item. Please try again.');
     }
   };
 
   const handleClearCart = async () => {
     const token = localStorage.getItem('token');
     try {
+      // Clear cart in the backend
       const response = await axios.delete('https://globe-mart.onrender.com/api/cart', {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -107,14 +110,13 @@ const CartPage = () => {
       }
     } catch (error) {
       console.error('Error clearing cart:', error);
-      alert('Error clearing cart');
+      setError('Failed to clear cart. Please try again.');
     }
   };
 
   const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
 
   const handleProceedToCheckout = () => {
-    // Navigate to the checkout page
     navigate('/checkout');
   };
 
@@ -122,7 +124,7 @@ const CartPage = () => {
   console.log('Current cart:', cart);
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
+  if (error) return <p className="error-message">{error}</p>;
 
   return (
     <div className="container my-5">
@@ -162,13 +164,14 @@ const CartPage = () => {
             </button>
             <h4 className="totalprice">Total Price: ${totalPrice}</h4>
             <div className="checkout-btn">
-              <button className='btn btn-primary mt-3' onClick={handleProceedToCheckout}>Continue</button>
+              <button className="btn btn-primary mt-3" onClick={handleProceedToCheckout}>
+                Proceed to Checkout
+              </button>
             </div>
-        </div>
-    </>
-  )
-}
-    </div >
+          </div>
+        </>
+      )}
+    </div>
   );
 };
 
