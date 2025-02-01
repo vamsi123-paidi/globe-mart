@@ -19,23 +19,15 @@ const categories = [
 
 const Navbarcomponent = () => {
   const navigate = useNavigate();
-
-  // Authentication state
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  // Cart state
   const [totalItemsInCart, setTotalItemsInCart] = useState(0);
-
-  // Modal states
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
 
-  // Form states
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  // Check login status on mount
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -44,18 +36,14 @@ const Navbarcomponent = () => {
       setIsLoggedIn(false);
     }
 
-    // Check the cart item count from localStorage if logged in
     const storedCart = JSON.parse(localStorage.getItem('cart')) || [];
     const totalItems = storedCart.reduce((total, item) => total + item.quantity, 0);
     setTotalItemsInCart(totalItems);
 
   }, []);
-
-  // Login handlers
   const handleShowLogin = () => setShowLogin(true);
   const handleCloseLogin = () => setShowLogin(false);
 
-  // Register handlers
   const handleShowRegister = () => setShowRegister(true);
   const handleCloseRegister = () => setShowRegister(false);
 
@@ -67,7 +55,7 @@ const Navbarcomponent = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', {
+      const response = await axios.post('https://globe-mart.onrender.com/api/auth/login', {
         email,
         password,
       });
@@ -92,7 +80,7 @@ const Navbarcomponent = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/register', {
+      const response = await axios.post('https://globe-mart.onrender.com/api/auth/register', {
         email,
         password,
       });
@@ -110,7 +98,7 @@ const Navbarcomponent = () => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     setIsLoggedIn(false);
-    setTotalItemsInCart(0); // Reset cart count on logout
+    setTotalItemsInCart(0);
     navigate('/');
   };
 
