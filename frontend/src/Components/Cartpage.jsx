@@ -9,53 +9,55 @@ const CartPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    console.log('Token:', localStorage.getItem('token'));
-    console.log('User ID:', localStorage.getItem('userId'));
+useEffect(() => {
+  console.log('Token:', localStorage.getItem('token'));
+  console.log('User ID:', localStorage.getItem('userId'));
 
-    const fetchCart = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const userId = localStorage.getItem('userId');
+  const fetchCart = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const userId = localStorage.getItem('userId');
 
-        if (!token || !userId) {
-          setError('User not logged in. Please log in to view your cart.');
-          setLoading(false);
-          return;
-        }
-
-        const response = await axios.get('https://globe-mart.onrender.com/api/cart', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        console.log('API response:', response.data);
-
-        if (response.status === 401) {
-          // Token is invalid or expired
-          localStorage.removeItem('token');
-          localStorage.removeItem('userId');
-          setError('Session expired. Please log in again.');
-          return;
-        }
-
-        if (response.data && response.data.items) {
-          setCart(response.data.items);
-        } else {
-          setError('No items found in your cart.');
-        }
-      } catch (err) {
-        console.error('Error fetching cart:', err);
-        setError('Failed to fetch cart. Please try again later.');
-      } finally {
+      if (!token || !userId) {
+        setError('User not logged in. Please log in to view your cart.');
         setLoading(false);
+        return;
       }
-    };
 
-    fetchCart();
-  }, []);
+      const response = await axios.get('https://globe-mart.onrender.com/api/cart', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
+      console.log('API response:', response.data);
+
+      if (response.status === 401) {
+        // Token is invalid or expired
+        localStorage.removeItem('token');
+        localStorage.removeItem('userId');
+        setError('Session expired. Please log in again.');
+        return;
+      }
+
+      if (response.data && response.data.items) {
+        setCart(response.data.items);
+      } else if (response.data.message === 'Cart not found or is empty') {
+        setError('Your cart is empty.');
+        setCart([]); // Set cart to an empty array
+      } else {
+        setError('No items found in your cart.');
+      }
+    } catch (err) {
+      console.error('Error fetching cart:', err);
+      setError('Failed to fetch cart. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchCart();
+}, []);
   const handleQuantityChange = async (productId, newQuantity) => {
     try {
       const token = localStorage.getItem('token');
