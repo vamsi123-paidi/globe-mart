@@ -142,7 +142,6 @@ exports.updateCartQuantity = async (req, res) => {
     if (!productId || quantity < 1) {
       return res.status(400).json({ message: 'Invalid product ID or quantity' });
     }
-
     const cartItem = await Cart.findOne({ userId: req.user.id, productId });
 
     if (!cartItem) {
