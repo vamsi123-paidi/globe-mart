@@ -19,7 +19,6 @@ const PaymentMethods = () => {
     <div className="payment-container">
       <h2>Select Your Payment Method</h2>
 
-      {/* Payment Options */}
       <div className="payment-options">
         <div className="payment-option">
           <input
@@ -92,7 +91,6 @@ const PaymentMethods = () => {
 
       <button onClick={handlePaymentSubmit}>Proceed to Checkout</button>
 
-      {/* Confirmation animation */}
       {orderConfirmed && (
         <div className="order-confirmation">
           <div className="confirmation-message">
