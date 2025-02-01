@@ -10,7 +10,7 @@ dotenv.config();
 const app = express();
 
 const allowedOrigins = [
-  'https://e-commerce-mernstack.vercel.app', 
+  'https://globe-mart.vercel.app', 
   'http://localhost:5173',  
 ];
 
