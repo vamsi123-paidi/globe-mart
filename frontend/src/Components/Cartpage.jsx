@@ -19,7 +19,7 @@ useEffect(() => {
       const userId = localStorage.getItem('userId');
 
       if (!token || !userId) {
-        setError('User not logged in. Please log in to view your cart.');
+        setError('User not logged in. Please log in  view your cart.');
         setLoading(false);
         return;
       }
