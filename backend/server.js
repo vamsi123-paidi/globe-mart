@@ -9,23 +9,13 @@ const favoritesRoutes = require('./routes/favoritesRoutes'); // Import favorites
 dotenv.config();
 const app = express();
 
-const allowedOrigins = [
-  'https://globe-mart.vercel.app', 
-  'http://localhost:5173',  
-];
-
-app.use(cors({
-  origin: function (origin, callback) {
-    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+const corsOptions = {
+  origin: 'https://globe-mart.vercel.app', // Allow only this frontend URL
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-}));
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 
