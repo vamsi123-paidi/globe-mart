@@ -24,7 +24,7 @@ const ProfilePage = () => {
         throw new Error('No token found');
       }
 
-      const response = await axios.get('http://localhost:5000/api/user/', {
+      const response = await axios.get('https://globe-mart.onrender.com/api/user/', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -50,7 +50,7 @@ const ProfilePage = () => {
         throw new Error('No token found');
       }
 
-      const response = await axios.get('http://localhost:5000/api/favorites', {
+      const response = await axios.get('https://globe-mart.onrender.com/api/favorites', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -74,7 +74,7 @@ const ProfilePage = () => {
         throw new Error('No token found');
       }
 
-      const response = await axios.get('http://localhost:5000/api/cart', {
+      const response = await axios.get('https://globe-mart.onrender.com/api/cart', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -99,7 +99,7 @@ const ProfilePage = () => {
         throw new Error('No token found');
       }
 
-      await axios.put('http://localhost:5000/api/user/profile', user, {
+      await axios.put('https://globe-mart.onrender.com/api/user/profile', user, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
