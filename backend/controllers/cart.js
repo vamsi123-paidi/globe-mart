@@ -81,16 +81,24 @@ exports.getCart = async (req, res) => {
       return res.status(404).json({ message: 'Cart not found or is empty' });
     }
 
-    return res.status(200).json({ items: cart });  // Send back cart items
+    // Map the cart items to match the frontend's expected structure
+    const formattedCart = cart.map(item => ({
+      productId: item.productId,
+      title: item.title,
+      price: item.price,
+      quantity: item.quantity,
+      thumbnail: item.thumbnail,
+      brand: item.brand,
+      rating: item.rating,
+      stock: item.stock,
+    }));
+
+    return res.status(200).json({ items: formattedCart });  // Send back formatted cart items
   } catch (error) {
     console.error('Error fetching cart:', error);
     return res.status(500).json({ message: 'Error fetching cart' });
   }
 };
-
-
-
-
 exports.removeFromCart = async (req, res) => {
   try {
     const { productId } = req.body;
